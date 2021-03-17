@@ -1,6 +1,7 @@
 package com.limcg.mycinema.repository.remote
 
 import com.haroldadmin.cnradapter.NetworkResponse
+import com.limcg.mycinema.repository.entities.Error
 import com.limcg.mycinema.repository.entities.Movie
 import com.limcg.mycinema.repository.entities.MovieList
 import com.limcg.mycinema.utils.ErrorMessage
@@ -22,5 +23,5 @@ interface ApiService {
     suspend fun getMovieDetail(
             @Path("id") movie_id : String,
             @Query("api_key") api_key : String
-    ) : NetworkResponse<Movie, ErrorMessage>
+    ) : NetworkResponse<Movie, Error>
 }

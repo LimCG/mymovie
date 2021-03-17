@@ -1,5 +1,6 @@
 package com.limcg.mycinema.ui.moviedetail
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
@@ -26,15 +27,19 @@ class MovieDetailViewModel @Inject constructor(
         when(response)
         {
             is NetworkResponse.Success -> {
+                Log.e("TAG", "Success")
                 emit(Resource.Success(response.body))
             }
             is NetworkResponse.NetworkError -> {
+                Log.e("TAG", "NetworkError")
                 emit(Resource.Error(response.error.message))
             }
             is NetworkResponse.ServerError -> {
-                emit(Resource.Error(response.body?.error_msg))
+                Log.e("TAG", "ServerError")
+                emit(Resource.Error(response.body?.status_message))
             }
             is NetworkResponse.UnknownError -> {
+                Log.e("TAG", "UnknownError")
                 emit(Resource.Error(response.error.message))
             }
         }
