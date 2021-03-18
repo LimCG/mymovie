@@ -49,11 +49,24 @@ class MovieListActivity : AppCompatActivity(),
         mBinding.swipeRefresh.setOnRefreshListener(this)
         mBinding.spinner.onItemSelectedListener = this
 
+        mViewModel.progressState.observe(this, {
+
+            if(it is Resource.Loading)
+            {
+                // network state is loading
+                mBinding.swipeRefresh.isRefreshing = true
+            }
+            else if (it is Resource.Success)
+            {
+                // network state is success
+                mBinding.swipeRefresh.isRefreshing = false
+            }
+        })
+
     }
 
     override fun onRefresh() {
-        mViewModel.moveDataSource.value?.invalidate()
-        mBinding.swipeRefresh.isRefreshing = false
+        mViewModel.invalidate()
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

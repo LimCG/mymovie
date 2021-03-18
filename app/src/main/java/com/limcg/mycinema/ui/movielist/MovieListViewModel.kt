@@ -21,13 +21,18 @@ class MovieListViewModel @Inject constructor(
         "Ordered by alphabetical", "Ordered by rating")
     val spinnerDataList = arrayListOf("release_date.desc", "alphabetical.desc", "rating.desc")
 
+    var progressState : LiveData<Resource<Any>> = MutableLiveData()
+    val moveDataSource : MutableLiveData<MovieDataSource> = MutableLiveData<MovieDataSource>()
+
+    init {
+        progressState = Transformations.switchMap(moveDataSource, MovieDataSource::progressState)
+    }
+
     val config = PagedList.Config.Builder()
             .setPageSize(10)
-            .setInitialLoadSizeHint(1)
-            .setEnablePlaceholders(false)
+            .setInitialLoadSizeHint(10)
+            .setEnablePlaceholders(true)
             .build()
-
-    var moveDataSource : MutableLiveData<MovieDataSource> = MutableLiveData()
 
     fun getMovieList(
             release_date : String,
@@ -43,6 +48,11 @@ class MovieListViewModel @Inject constructor(
         }
 
         return LivePagedListBuilder(dataSourceFactory, config).build()
+    }
+
+    fun invalidate()
+    {
+        moveDataSource.value?.invalidate()
     }
 
 }

@@ -16,12 +16,16 @@ class MovieDataSource constructor(
     private val release_date : String,
     private val sort_by : String) : PageKeyedDataSource<Int, Movie>() {
 
+    var progressState : MutableLiveData<Resource<Any>> = MutableLiveData()
+
     override fun loadInitial(
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, Movie>
     ) {
 
         scope.launch {
+
+            progressState.postValue(Resource.Loading())
 
             val response = apiService.getMovies(api_key, release_date, sort_by, 1)
             when(response)
@@ -33,15 +37,17 @@ class MovieDataSource constructor(
                     callback.onResult(response.body.movies,
                         if (page == 1) null else page - 1, page + 1)
 
+                    progressState.postValue(Resource.Success(response.body.movies))
+
                 }
                 is NetworkResponse.NetworkError -> {
-//                    networkSate.postValue(Resource.Error(response.error.message))
+                    progressState.postValue(Resource.Error(response.error.message))
                 }
                 is NetworkResponse.ServerError -> {
-//                    networkSate.postValue(Resource.Error(response.body?.error_msg))
+                    progressState.postValue(Resource.Error(response.body?.error_msg))
                 }
                 is NetworkResponse.UnknownError -> {
-//                    networkSate.postValue(Resource.Error(response.error.message))
+                    progressState.postValue(Resource.Error(response.error.message))
                 }
             }
 

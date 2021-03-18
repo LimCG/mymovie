@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -88,16 +89,23 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailClickListener {
                 when (it) {
                     is Resource.Loading -> {
 
+                        // loading state
                     }
 
                     is Resource.Success -> {
 
+                        // Data binding
                         mBinding.movieData = it.data
                     }
 
                     is Resource.Error -> {
 
+                        // hide booking button if data information return empty
+                        mBinding.buttonBook.visibility = View.GONE
+
+                        // show error msg
                         Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+
                     }
 
                 }
